@@ -1,8 +1,3 @@
-//! A pallet to demonstrate usage of a simple storage map
-//!
-//! Storage maps map a key type to a value type. The hasher used to hash the key can be customized.
-//! This pallet uses the `blake2_128_concat` hasher. This is a good default hasher.
-
 #![cfg_attr(not(feature = "std"), no_std)]
 
 use frame_support::{
@@ -20,6 +15,7 @@ pub trait Config: frame_system::Config {
 
 decl_storage! {
 	trait Store for Module<T: Config> as TemplateModule {
+		/// Storage Map to store merkle root of the data points of a file stored in IPFS
 		MerkleRoots get(fn merkle_root): map hasher(blake2_128_concat)  Vec<u8> => (T::AccountId, T::BlockNumber);
 	}
 }
@@ -29,16 +25,17 @@ decl_event!(
 	where
 		AccountId = <T as frame_system::Config>::AccountId,
 	{
+		/// Event emitted when merkle root is stored.
 		MerkleRootEntry(AccountId, Vec<u8>),
 
-		/// A user has read their entry, leaving it in storage
+		/// Event emitted when account id and block number is accessed using merkle root
 		MerkleRootEntryFound(AccountId, Vec<u8>),
 	}
 );
 
 decl_error! {
 	pub enum Error for Module<T: Config> {
-		/// The requested user has not stored a value yet
+		/// Error thrown when no entry of the merkle root is found
 		NoValueStored,
 	}
 }
@@ -52,7 +49,7 @@ decl_module! {
 		// Initialize events
 		fn deposit_event() = default;
 
-		/// Set the merkle root stored at a particular key
+		/// Store the account id and blocknumber set at a particular key as merkle root
 		#[weight = 10_000]
 		fn set_merkleroot_entry(origin, entry: Vec<u8>) -> DispatchResult {
 			// A user can only set their own entry
