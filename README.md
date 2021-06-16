@@ -1,3 +1,6 @@
+# Polkadot Buildathon: India - Runner-up
+We participated in Polkadot Buildathon: India and we were runner up in the hackathon.
+
 # Substrate Node Template
 
 A fresh FRAME-based [Substrate](https://www.substrate.io/) node, ready for hacking :rocket:
